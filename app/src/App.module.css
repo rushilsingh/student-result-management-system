@@ -1,0 +1,11 @@
+/* App.module.css */
+.appContainer {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+      }
+      
+      .title {
+	flex-grow: 1;
+      }
+      
