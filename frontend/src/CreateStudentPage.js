@@ -6,6 +6,7 @@ function CreateStudentPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [dob, setDob] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,6 +15,7 @@ function CreateStudentPage() {
       first_name: firstName,
       last_name: lastName,
       email_address: email,
+      date_of_birth: dob,
     };
 
     fetch("http://localhost:8000/student", {
@@ -63,6 +65,19 @@ function CreateStudentPage() {
           onChange={(e) => setEmail(e.target.value)}
           fullWidth
           required
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          label="Date of Birth"
+          type="date"
+          variant="outlined"
+          value={dob}
+          onChange={(e) => setDob(e.target.value)}
+          fullWidth
+          required
+          InputLabelProps={{
+            shrink: true,
+          }}
           sx={{ mb: 2 }}
         />
         <Button type="submit" variant="contained" color="primary">

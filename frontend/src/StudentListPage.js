@@ -1,7 +1,17 @@
 // StudentListPage.js
 import React, { useState, useEffect } from "react";
-import { CircularProgress, List, ListItem, ListItemText, IconButton, ListItemSecondaryAction } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 function StudentListPage() {
   const [students, setStudents] = useState([]);
@@ -48,18 +58,32 @@ function StudentListPage() {
       {loading ? (
         <CircularProgress />
       ) : (
-        <List>
-          {students.map((student) => (
-            <ListItem key={student._id}>
-              <ListItemText primary={`${student.first_name} ${student.last_name}`} secondary={student.email_address} />
-              <ListItemSecondaryAction>
-                <IconButton edge="end" aria-label="delete" onClick={() => deleteStudent(student._id)}>
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Date of Birth</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {students.map((student) => (
+                <TableRow key={student._id}>
+                  <TableCell>{`${student.first_name} ${student.last_name}`}</TableCell>
+                  <TableCell>{student.email_address}</TableCell>
+                  <TableCell>{student.date_of_birth}</TableCell>
+                  <TableCell>
+                    <IconButton edge="end" aria-label="delete" onClick={() => deleteStudent(student._id)}>
+                      <CloseIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
     </div>
   );
