@@ -5,16 +5,21 @@ import {
   Button,
   Box,
   Typography,
-  Snackbar,
-  Alert,
+  Dialog,
+  DialogContent
 } from "@mui/material";
+import CustomAlert from "./CustomAlert";
 
 function CreateStudentPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
-  const [notification, setNotification] = useState({ open: false, message: "", severity: "success" });
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,7 +40,7 @@ function CreateStudentPage() {
     })
       .then((response) => {
         if (response.ok) {
-          setNotification({ open: true, message: "Student created", severity: "success" });
+          setAlert({ open: true, message: "Student created", severity: "success" });
           setFirstName("");
           setLastName("");
           setEmail("");
@@ -45,13 +50,13 @@ function CreateStudentPage() {
         }
       })
       .catch((error) => {
-        setNotification({ open: true, message: "Error creating student", severity: "error" });
+        setAlert({ open: true, message: "Error creating student", severity: "error" });
         console.error("Error creating student:", error);
       });
   };
 
-  const handleCloseNotification = () => {
-    setNotification({ ...notification, open: false });
+  const handleCloseAlert = () => {
+    setAlert({ ...alert, open: false });
   };
 
   const validateAge = () => {
@@ -128,20 +133,18 @@ function CreateStudentPage() {
         >
           Add New Student
         </Button>
-      </form>
-      <Snackbar
-        open={notification.open}
-        autoHideDuration={6000}
-        onClose={handleCloseNotification}
-      >
-        <Alert
-          onClose={handleCloseNotification}
-          severity={notification.severity}
-          sx={{ width: "100%" }}
-        >
-          {notification.message}
-        </Alert>
-      </Snackbar>
+        </form>
+      <Dialog open={alert.open} onClose={handleCloseAlert}>
+        <DialogContent>
+          <CustomAlert
+            onClose={handleCloseAlert}
+            severity={alert.severity}
+            sx={{ width: "100%" }}
+          >
+            {alert.message}
+          </CustomAlert>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }

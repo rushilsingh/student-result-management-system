@@ -1,24 +1,33 @@
-// CreateCoursePage.js
 import React, { useState } from "react";
 import {
   Button,
   TextField,
   Paper,
   Typography,
-  Snackbar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  FormHelperText,
 } from "@mui/material";
-import Alert from "@mui/material/Alert";
+import CustomAlert from "./CustomAlert";
 
 function CreateCoursePage() {
   const [name, setName] = useState("");
-  const [notification, setNotification] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertSeverity, setAlertSeverity] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [nameError, setNameError] = useState(false);
+
+  const handleCloseAlert = () => {
+    setAlertOpen(false);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!name) {
+      setNameError(true);
+      return;
+    }
     const apiUrl = "http://localhost:8000/course";
 
     fetch(apiUrl, {
@@ -28,29 +37,28 @@ function CreateCoursePage() {
       },
       body: JSON.stringify({ name }),
     })
-      .then((response) => {
+      .then(async (response) => {
         if (response.ok) {
           setName("");
-          showNotification("Course created successfully", "success");
+          setAlertSeverity("success");
+          setAlertMessage("Course created successfully");
+          setAlertOpen(true);
         } else {
-          throw new Error("Failed to create course");
+          const errorMessage = await response.text();
+          throw new Error(errorMessage);
         }
       })
       .catch((error) => {
         console.error("Error creating course:", error);
-        showNotification("Failed to create course", "error");
+        setAlertSeverity("error");
+        setAlertMessage(error.message);
+        setAlertOpen(true);
       });
   };
 
-  const showNotification = (message, severity) => {
-    setNotification({ open: true, message, severity });
-  };
-
-  const handleCloseNotification = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setNotification({ ...notification, open: false });
+  const handleNameChange = (event) => {
+    setName(event.target.value);
+    setNameError(false);
   };
 
   return (
@@ -65,26 +73,36 @@ function CreateCoursePage() {
             fullWidth
             margin="normal"
             value={name}
-            onChange={(event) => setName(event.target.value)}
+            onChange={handleNameChange}
+            required
+            name="courseName"
+            error={nameError}
           />
+          {nameError && (
+            <FormHelperText error>Please enter a course name</FormHelperText>
+          )}
           <Button type="submit" variant="contained" color="primary">
             Create Course
           </Button>
         </form>
       </Paper>
-      <Snackbar
-        open={notification.open}
-        autoHideDuration={6000}
-        onClose={handleCloseNotification}
+      <Dialog
+        open={alertOpen}
+        onClose={handleCloseAlert}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
       >
-        <Alert
-          onClose={handleCloseNotification}
-          severity={notification.severity}
-          sx={{ width: "100%" }}
-        >
-          {notification.message}
-        </Alert>
-      </Snackbar>
+        <DialogTitle id="alert-dialog-title">{"Notification"}</DialogTitle>
+        <DialogContent>
+          <CustomAlert
+            onClose={handleCloseAlert}
+            severity={alertSeverity}
+            sx={{ width: "100%" }}
+          >
+            {alertMessage}
+          </CustomAlert>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

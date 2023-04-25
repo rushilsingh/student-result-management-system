@@ -36,17 +36,6 @@ def list_students(request: Request):
     return students
 
 
-@router.get(
-    "/{id}", response_description="Get a single student by id", response_model=Student
-)
-def find_student(id: str, request: Request):
-    if (student := request.app.database["students"].find_one({"_id": id})) is not None:
-        return student
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND, detail=f"Student with ID {id} not found"
-    )
-
-
 @router.delete("/{id}", response_description="Delete a student")
 def delete_student(id: str, request: Request, response: Response):
     delete_result = request.app.database["students"].delete_one({"_id": id})

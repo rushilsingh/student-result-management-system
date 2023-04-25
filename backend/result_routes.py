@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body, Request, Response, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from typing import List
-
+from pymongo.errors import DuplicateKeyError
 from models import Result
 
 router = APIRouter()
@@ -26,7 +26,7 @@ def create_result(request: Request, result: Result = Body(...)):
     except DuplicateKeyError:
         raise HTTPException(
             status_code=400,
-            detail="A student with the same first and last name already exists.",
+            detail="A result with the same student_id and course_id already exists.",
         )
 
 

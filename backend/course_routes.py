@@ -25,8 +25,7 @@ def create_course(request: Request, course: Course = Body(...)):
 
     except DuplicateKeyError:
         raise HTTPException(
-            status_code=400,
-            detail="A student with the same first and last name already exists.",
+            status_code=400, detail="A course with the same name already exists."
         )
 
 
