@@ -27,40 +27,6 @@ def list_students(request: Request):
     return students
 
 
-@router.get(
-    "/{id}", response_description="Get a single student by id", response_model=Student
-)
-def find_student(id: str, request: Request):
-    if (student := request.app.database["students"].find_one({"_id": id})) is not None:
-        return student
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND, detail=f"Student with ID {id} not found"
-    )
-
-
-@router.put("/{id}", response_description="Update a student", response_model=Student)
-def update_student(id: str, request: Request, student: StudentUpdate = Body(...)):
-    student = {k: v for k, v in student.dict().items() if v is not None}
-    if len(student) >= 1:
-        update_result = request.app.database["students"].update_one(
-            {"_id": id}, {"$set": student}
-        )
-
-        if update_result.modified_count == 0:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Student with ID {id} not found",
-            )
-
-    if (
-        existing_student := request.app.database["students"].find_one({"_id": id})
-    ) is not None:
-        return existing_student
-
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND, detail=f"Student with ID {id} not found"
-    )
-
 
 @router.delete("/{id}", response_description="Delete a student")
 def delete_student(id: str, request: Request, response: Response):
