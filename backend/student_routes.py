@@ -16,7 +16,9 @@ router = APIRouter()
 def create_student(request: Request, student: Student = Body(...)):
     student = jsonable_encoder(student)
     new_student = request.app.database["students"].insert_one(student)
-    created_student = request.app.database["students"].find_one({"_id": new_student.inserted_id})
+    created_student = request.app.database["students"].find_one(
+        {"_id": new_student.inserted_id}
+    )
 
     return created_student
 
@@ -26,6 +28,16 @@ def list_students(request: Request):
     students = list(request.app.database["students"].find(limit=100))
     return students
 
+
+@router.get(
+    "/{id}", response_description="Get a single student by id", response_model=Student
+)
+def find_student(id: str, request: Request):
+    if (student := request.app.database["students"].find_one({"_id": id})) is not None:
+        return student
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND, detail=f"Student with ID {id} not found"
+    )
 
 
 @router.delete("/{id}", response_description="Delete a student")
