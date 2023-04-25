@@ -51,6 +51,9 @@ def find_student(id: str, request: Request):
 def delete_student(id: str, request: Request, response: Response):
     delete_result = request.app.database["students"].delete_one({"_id": id})
 
+    # Delete associated results
+    request.app.database["results"].delete_many({"student_id": id})
+
     if delete_result.deleted_count == 1:
         response.status_code = status.HTTP_204_NO_CONTENT
         return response

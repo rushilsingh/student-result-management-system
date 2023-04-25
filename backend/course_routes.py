@@ -49,9 +49,13 @@ def find_course(id: str, request: Request):
 
 @router.delete("/{id}", response_description="Delete a course")
 def delete_course(id: str, request: Request, response: Response):
-    delete_result = request.app.database["courses"].delete_one({"_id": id})
 
-    if delete_result.deleted_count == 1:
+    delete_course = request.app.database["courses"].delete_one({"_id": id})
+
+    # Delete associated results
+    request.app.database["results"].delete_many({"course_id": id})
+
+    if delete_course.deleted_count == 1:
         response.status_code = status.HTTP_204_NO_CONTENT
         return response
 
