@@ -37,7 +37,7 @@ async def startup_db_client():
         )
         app.database.courses.create_index([("name", 1)], unique=True)
         app.database.results.create_index(
-            [("student_id", 1), ("course_id", 1), ("grade", 1)], unique=True
+            [("student_id", 1), ("course_id", 1)], unique=True
         )
 
         print("Connected to the MongoDB database!")
