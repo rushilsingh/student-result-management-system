@@ -37,7 +37,7 @@ function CreateStudentPage() {
   return (
     <Box>
       <Typography variant="h4" mb={2}>
-        Create Student
+      Add New Students
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
@@ -81,7 +81,7 @@ function CreateStudentPage() {
           sx={{ mb: 2 }}
         />
         <Button type="submit" variant="contained" color="primary">
-          Create Student
+        Add New Student
         </Button>
       </form>
     </Box>

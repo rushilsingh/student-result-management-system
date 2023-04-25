@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from dotenv import dotenv_values
 from pymongo import MongoClient
 from student_routes import router as student_router
+
+from course_routes import router as course_router
 from fastapi.middleware.cors import CORSMiddleware
 
 config = dotenv_values(".env")
@@ -28,3 +30,4 @@ def shutdown_db_client():
 
 
 app.include_router(student_router, tags=["students"], prefix="/student")
+app.include_router(course_router, tags=["courses"], prefix="/course")

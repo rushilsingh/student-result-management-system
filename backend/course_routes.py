@@ -1,0 +1,41 @@
+from fastapi import APIRouter, Body, Request, Response, HTTPException, status
+from fastapi.encoders import jsonable_encoder
+from typing import List
+
+from models import Course
+
+router = APIRouter()
+
+
+@router.post(
+    "/",
+    response_description="Create a new course",
+    status_code=status.HTTP_201_CREATED,
+    response_model=Course,
+)
+def create_course(request: Request, course: Course = Body(...)):
+    course = jsonable_encoder(course)
+    new_course = request.app.database["courses"].insert_one(course)
+    created_course = request.app.database["courses"].find_one({"_id": new_course.inserted_id})
+
+    return created_course
+
+
+@router.get("/", response_description="List all courses", response_model=List[Course])
+def list_courses(request: Request):
+    courses = list(request.app.database["courses"].find(limit=100))
+    return courses
+
+
+
+@router.delete("/{id}", response_description="Delete a course")
+def delete_course(id: str, request: Request, response: Response):
+    delete_result = request.app.database["courses"].delete_one({"_id": id})
+
+    if delete_result.deleted_count == 1:
+        response.status_code = status.HTTP_204_NO_CONTENT
+        return response
+
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND, detail=f"Course with ID {id} not found"
+    )

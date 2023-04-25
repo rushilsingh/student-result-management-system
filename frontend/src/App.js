@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import HomePage from "./HomePage";
 import CreateStudentPage from "./CreateStudentPage";
 import StudentListPage from "./StudentListPage";
+import CreateCoursePage from "./CreateCoursePage";
+import CourseListPage from "./CourseListPage";
 import { Button, Box, Container, Drawer, List, ListItem } from "@mui/material";
 import { styled } from "@mui/system";
 import styles from "./App.module.css";
@@ -35,10 +37,16 @@ function App() {
                 <NavLink>Home</NavLink>
               </ListItem>
               <ListItem button component={Link} to="/create-student">
-                <NavLink>Create Student</NavLink>
+                <NavLink>Add New Student</NavLink>
               </ListItem>
               <ListItem button component={Link} to="/student-list">
                 <NavLink>Student List</NavLink>
+              </ListItem>
+              <ListItem button component={Link} to="/create-course">
+                <NavLink>Add New Course</NavLink>
+              </ListItem>
+              <ListItem button component={Link} to="/course-list">
+                <NavLink>Course List</NavLink>
               </ListItem>
             </List>
           </Drawer>
@@ -47,6 +55,8 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/create-student" element={<CreateStudentPage />} />
               <Route path="/student-list" element={<StudentListPage />} />
+              <Route path="/create-course" element={<CreateCoursePage />} />
+              <Route path="/course-list" element={<CourseListPage />} />
             </Routes>
           </Container>
         </Box>
