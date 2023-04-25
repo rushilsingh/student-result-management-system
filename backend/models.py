@@ -1,13 +1,13 @@
 import uuid
-from typing import Optional
 from pydantic import BaseModel, Field
-
+import datetime
 
 class Student(BaseModel):
     id: str = Field(default_factory=uuid.uuid4, alias="_id")
     first_name: str = Field(...)
     last_name: str = Field(...)
     email_address: str = Field(...)
+    date_of_birth: datetime.date = Field(...)
 
     class Config:
         allow_population_by_field_name = True
@@ -17,16 +17,6 @@ class Student(BaseModel):
                 "first_name": "Rushil",
                 "last_name": "Singh",
                 "email_address": "rushil@email.com",
-            }
-        }
-
-
-class StudentUpdate(BaseModel):
-    email_address: Optional[str]
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "email_address": "rushil2@email.com",
+                "date_of_birth": "1999-07-20",
             }
         }
