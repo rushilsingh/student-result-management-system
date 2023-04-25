@@ -1,9 +1,21 @@
 // CreateCoursePage.js
 import React, { useState } from "react";
-import { Button, TextField, Paper, Typography } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Paper,
+  Typography,
+  Snackbar,
+} from "@mui/material";
+import Alert from "@mui/material/Alert";
 
 function CreateCoursePage() {
   const [name, setName] = useState("");
+  const [notification, setNotification] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -19,13 +31,26 @@ function CreateCoursePage() {
       .then((response) => {
         if (response.ok) {
           setName("");
+          showNotification("Course created successfully", "success");
         } else {
           throw new Error("Failed to create course");
         }
       })
       .catch((error) => {
         console.error("Error creating course:", error);
+        showNotification("Failed to create course", "error");
       });
+  };
+
+  const showNotification = (message, severity) => {
+    setNotification({ open: true, message, severity });
+  };
+
+  const handleCloseNotification = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setNotification({ ...notification, open: false });
   };
 
   return (
@@ -41,15 +66,27 @@ function CreateCoursePage() {
             margin="normal"
             value={name}
             onChange={(event) => setName(event.target.value)}
-	    />
-	    <Button type="submit" variant="contained" color="primary">
-	      Create Course
-	    </Button>
-	  </form>
-	</Paper>
-      </div>
-    );
-  }
-  
-  export default CreateCoursePage;
-  
+          />
+          <Button type="submit" variant="contained" color="primary">
+            Create Course
+          </Button>
+        </form>
+      </Paper>
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleCloseNotification}
+      >
+        <Alert
+          onClose={handleCloseNotification}
+          severity={notification.severity}
+          sx={{ width: "100%" }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
+    </div>
+  );
+}
+
+export default CreateCoursePage;

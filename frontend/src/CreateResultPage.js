@@ -1,3 +1,4 @@
+// CreateResultPage.js
 import React, { useState, useEffect } from "react";
 import {
   Button,
@@ -7,7 +8,9 @@ import {
   Select,
   FormControl,
   InputLabel,
+  Snackbar,
 } from "@mui/material";
+import Alert from "@mui/material/Alert";
 
 function CreateResultPage() {
   const [students, setStudents] = useState([]);
@@ -15,6 +18,11 @@ function CreateResultPage() {
   const [student_id, setStudentId] = useState("");
   const [course_id, setCourseId] = useState("");
   const [grade, setGrade] = useState("");
+  const [notification, setNotification] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   useEffect(() => {
     fetch("http://localhost:8000/student")
@@ -45,13 +53,26 @@ function CreateResultPage() {
           setStudentId("");
           setCourseId("");
           setGrade("");
+          showNotification("Result created successfully", "success");
         } else {
           throw new Error("Failed to create result");
         }
       })
       .catch((error) => {
         console.error("Error creating result:", error);
+        showNotification("Failed to create result", "error");
       });
+  };
+
+  const showNotification = (message, severity) => {
+    setNotification({ open: true, message, severity });
+  };
+
+  const handleCloseNotification = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setNotification({ ...notification, open: false });
   };
 
   return (
@@ -90,7 +111,7 @@ function CreateResultPage() {
             </Select>
           </FormControl>
           <FormControl fullWidth margin="normal">
-            <InputLabel htmlFor="grade">Grade</InputLabel>
+          <InputLabel htmlFor="grade">Grade</InputLabel>
             <Select
               id="grade"
               value={grade}
@@ -108,6 +129,15 @@ function CreateResultPage() {
           </Button>
         </form>
       </Paper>
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleCloseNotification}
+      >
+        <Alert onClose={handleCloseNotification} severity={notification.severity}>
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
