@@ -35,17 +35,6 @@ def list_courses(request: Request):
     return courses
 
 
-@router.get(
-    "/{id}", response_description="Get a single course by id", response_model=Course
-)
-def find_course(id: str, request: Request):
-    if (course := request.app.database["courses"].find_one({"_id": id})) is not None:
-        return course
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND, detail=f"Course with ID {id} not found"
-    )
-
-
 @router.delete("/{id}", response_description="Delete a course")
 def delete_course(id: str, request: Request, response: Response):
 
