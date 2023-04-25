@@ -14,13 +14,20 @@ router = APIRouter()
     response_model=Result,
 )
 def create_result(request: Request, result: Result = Body(...)):
-    result = jsonable_encoder(result)
-    new_result = request.app.database["results"].insert_one(result)
-    created_result = request.app.database["results"].find_one(
-        {"_id": new_result.inserted_id}
-    )
+    try:
+        result = jsonable_encoder(result)
+        new_result = request.app.database["results"].insert_one(result)
+        created_result = request.app.database["results"].find_one(
+            {"_id": new_result.inserted_id}
+        )
 
-    return created_result
+        return created_result
+
+    except DuplicateKeyError:
+        raise HTTPException(
+            status_code=400,
+            detail="A student with the same first and last name already exists.",
+        )
 
 
 @router.get("/", response_description="List all results", response_model=List[Result])

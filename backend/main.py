@@ -18,12 +18,33 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from pymongo.errors import ServerSelectionTimeoutError
+
 
 @app.on_event("startup")
-def startup_db_client():
+async def startup_db_client():
     app.mongodb_client = MongoClient(config["ATLAS_URI"])
-    app.database = app.mongodb_client[config["DB_NAME"]]
-    print("Connected to the MongoDB database!")
+
+    try:
+        app.mongodb_client.admin.command(
+            "ismaster"
+        )  # Check if the MongoDB server is running
+        app.database = app.mongodb_client[config["DB_NAME"]]
+
+        # Create unique indexes
+        app.database.students.create_index(
+            [("first_name", 1), ("last_name", 1)], unique=True
+        )
+        app.database.courses.create_index([("name", 1)], unique=True)
+        app.database.results.create_index(
+            [("student_id", 1), ("course_id", 1), ("grade", 1)], unique=True
+        )
+
+        print("Connected to the MongoDB database!")
+
+    except ServerSelectionTimeoutError:
+        print("Error connecting to the MongoDB database!")
+        app.mongodb_client.close()
 
 
 @app.on_event("shutdown")
