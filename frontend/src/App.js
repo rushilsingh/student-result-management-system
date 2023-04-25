@@ -6,6 +6,8 @@ import CreateStudentPage from "./CreateStudentPage";
 import StudentListPage from "./StudentListPage";
 import CreateCoursePage from "./CreateCoursePage";
 import CourseListPage from "./CourseListPage";
+import ResultListPage from "./ResultListPage"
+import CreateResultPage from "./CreateResultPage";
 import { Button, Box, Container, Drawer, List, ListItem } from "@mui/material";
 import { styled } from "@mui/system";
 import styles from "./App.module.css";
@@ -48,6 +50,13 @@ function App() {
               <ListItem button component={Link} to="/course-list">
                 <NavLink>Course List</NavLink>
               </ListItem>
+              <ListItem button component={Link} to="/create-result">
+                <NavLink>Add New Result</NavLink>
+              </ListItem>
+              <ListItem button component={Link} to="/result-list">
+                <NavLink>Result List</NavLink>
+              </ListItem>
+
             </List>
           </Drawer>
           <Container maxWidth="md" sx={{ flexGrow: 1 }}>
@@ -57,6 +66,8 @@ function App() {
               <Route path="/student-list" element={<StudentListPage />} />
               <Route path="/create-course" element={<CreateCoursePage />} />
               <Route path="/course-list" element={<CourseListPage />} />
+              <Route path="/create-result" element={<CreateResultPage />} />
+              <Route path="/result-list" element={<ResultListPage />} />
             </Routes>
           </Container>
         </Box>
